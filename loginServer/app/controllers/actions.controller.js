@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Action
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.title) {
+  if (!req.body.action) {
     res.status(400).send({
       message: "Content can not be empty!"
     });
@@ -13,16 +13,14 @@ exports.create = (req, res) => {
   }
 
   // Create a Action
-  const tutorial = {
-    title: req.body.title,
-    description: req.body.description,
-    power: req.body.power ? req.body.power : false,
+  const action = {
+    action: req.body.action,
     id_video: req.body.id_video,
     id_user: req.body.id_user
   };
 
   // Save Action in the database
-  Action.create(tutorial)
+  Action.create(action)
     .then(data => {
       res.send(data);
     })
@@ -36,8 +34,8 @@ exports.create = (req, res) => {
 
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
-  const title = req.query.title;
-  var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
+  const action = req.query.action;
+  var condition = action ? { title: { [Op.iLike]: `%${action}%` } } : null;
 
   Action.findAll({ where: condition })
     .then(data => {
@@ -46,7 +44,7 @@ exports.findAll = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving tutorials."
+          err.message || "Some error occurred while retrieving actions."
       });
     });
 };
@@ -80,7 +78,7 @@ exports.update = (req, res) => {
         });
       } else {
         res.send({
-          message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`
+          message: `Cannot update action with id=${id}. Maybe action was not found or req.body is empty!`
         });
       }
     })
@@ -105,7 +103,7 @@ exports.delete = (req, res) => {
         });
       } else {
         res.send({
-          message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`
+          message: `Cannot delete action with id=${id}. Maybe Tutorial was not found!`
         });
       }
     })
@@ -116,33 +114,19 @@ exports.delete = (req, res) => {
     });
 };
 
-// Delete all Tutorials from the database.
+// Delete all actions from the database.
 exports.deleteAll = (req, res) => {
   Action.destroy({
     where: {},
     truncate: false
   })
     .then(nums => {
-      res.send({ message: `${nums} Tutorials were deleted successfully!` });
+      res.send({ message: `${nums} Actions were deleted successfully!` });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all tutorials."
-      });
-    });
-};
-
-// find all published Action
-exports.findAllPowerOn = (req, res) => {
-  Action.findAll({ where: { power: true } })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials."
+          err.message || "Some error occurred while removing all actions."
       });
     });
 };
