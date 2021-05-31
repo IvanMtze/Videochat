@@ -1,7 +1,7 @@
 const db = require("../models");
 const config = require("../config/auth.config");
-const User = db.user;
-const Role = db.role;
+const User = db.users;
+const Role = db.roles;
 
 const Op = db.Sequelize.Op;
 
@@ -11,6 +11,8 @@ var bcrypt = require("bcryptjs");
 exports.signup = (req, res) => {
     // Save User to Database
     User.create({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         username: req.body.username,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 8)
@@ -74,6 +76,8 @@ exports.signin = (req, res) => {
                 }
                 res.status(200).send({
                     id: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
                     username: user.username,
                     email: user.email,
                     roles: authorities,
